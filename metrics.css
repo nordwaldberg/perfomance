@@ -1,0 +1,15 @@
+body {
+    background-color: #333;
+    color: #dedede;
+    box-sizing: border-box;
+}
+
+.wrapper {
+    height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.main-text {}

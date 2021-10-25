@@ -1,0 +1,20 @@
+body {
+    background-color: #333;
+    color: #dedede;
+    box-sizing: border-box;
+}
+
+.wrapper {
+    height: 85vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.upload-btn {
+    height: 30px;
+    width: 100px;
+    cursor: pointer;
+}
