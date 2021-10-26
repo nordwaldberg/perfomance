@@ -22,7 +22,7 @@ function prepareData(result) {
 // TODO: реализовать
 // показать значение метрики за несколько дней
 function showMetricByPeriod(data, dates, page, name) {
-    console.log(`Values of ${name} from ${dates[0]} to ${dates[dates.length - 1]}:`);
+    console.log(`Values of '${name}' from ${dates[0]} to ${dates[dates.length - 1]}:`);
 
     let table = {};
 
@@ -30,14 +30,35 @@ function showMetricByPeriod(data, dates, page, name) {
         table[date] = addMetricByDate(data, page, name, date);
     });
 
-    console.log(navigator.userAgent);
-
     console.table(table);
 };
 
 // показать сессию пользователя
-function showSession() {
+function showSession(data, page, date, sessionId) {
+    console.log(`User ${sessionId} session from ${date}`);
+
+    const session = data.filter(item => item.requestId === sessionId);
+
+    const sessionTable = {};
+
+    session.forEach(item => {
+        const timestampArr = item.timestamp.split('T');
+        const time = timestampArr[timestampArr.length - 1];
+            sessionTable[item.name] = sessionActionInfo(sessionId, item.page, time);
+    });
+
+    console.table(sessionTable);
 };
+
+function sessionActionInfo(id, page, time) {
+    const action = {};
+
+    action.sessionId = id;
+    action.page = page;
+    action.time = time;
+
+    return action;
+}
 
 // сравнить метрику в разных срезах
 function compareMetric() {
@@ -54,7 +75,7 @@ function addMetricByDate(data, page, name, date) {
         .map(item => item.value);
 
     let result = {};
-
+    result.page = page;
     result.hits = sampleData.length;
     result.p25 = quantile(sampleData, 0.25);
     result.p50 = quantile(sampleData, 0.5);
@@ -71,9 +92,7 @@ function calcMetricsByDate(data, page, date) {
     let table = {};
     table.connect = addMetricByDate(data, page, 'connect', date);
     table.ttfb = addMetricByDate(data, page, 'ttfb', date);
-    table.load = addMetricByDate(data, page, 'load', date);
-    table.square = addMetricByDate(data, page, 'square', date);
-    table.load = addMetricByDate(data, page, 'load', date);
+    table.upload = addMetricByDate(data, page, 'upload', date);
     table.generate = addMetricByDate(data, page, 'generate', date);
     table.draw = addMetricByDate(data, page, 'draw', date);
 
@@ -88,6 +107,8 @@ fetch('https://shri.yandex/hw/stat/data?counterId=3d0ce866-84ac-4962-90b6-bdf203
         calcMetricsByDate(data, '.send-metrics', '2021-10-26');
 
         showMetricByPeriod(data, ['2021-10-25', '2021-10-26'], '.send-metrics', 'connect');
+
+        showSession(data, '.send-metrics', '2021-10-26', '99532978');
 
         // добавить свои сценарии, реализовать функции выше
     });

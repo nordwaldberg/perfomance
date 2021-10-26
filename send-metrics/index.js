@@ -1,6 +1,11 @@
+
+const requestID = String(Math.random()).substr(2, 8);
+
+document.querySelector('.main-text').innerHTML = `> Hello! Your request id: ${requestID}. Press to button _`
+
 let counter = new Counter();
 
-counter.init('3d0ce866-84ac-4962-90b6-bdf203535f50', String(Math.random()).substr(2, 12), '.send-metrics');
+counter.init('3d0ce866-84ac-4962-90b6-bdf203535f50', requestID, '.send-metrics');
 counter.setAdditionalParams({
     env: 'production',
     platform: 'touch'
@@ -9,15 +14,8 @@ counter.setAdditionalParams({
 counter.send('connect', performance.timing.connectEnd - performance.timing.connectStart);
 counter.send('ttfb', performance.timing.responseEnd - performance.timing.requestStart);
 
-let timeStart = Date.now();
-
-setTimeout(function () {
-    counter.send('square', Date.now() - timeStart);
-}, Math.random() * 1000 + 500);
-
-
-let drawData = function () {
-    let html = '> Uploaded! Thanks _';
+let uploadData = function () {
+    let html = `> Uploaded! Your request id: ${requestID}. Thanks _`;
     let genStart = Date.now();
 
     counter.send('generate', Date.now() - genStart);
@@ -35,8 +33,8 @@ document.querySelector('.upload-btn').onclick = function () {
     let timeStart = Date.now();
 
     setTimeout(function () {
-        counter.send('load', Date.now() - timeStart);
+        counter.send('upload', Date.now() - timeStart);
 
-        drawData();
+        uploadData();
     }, Math.random() * 1000);
 }
