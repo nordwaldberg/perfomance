@@ -20,17 +20,28 @@ function prepareData(result) {
 }
 
 // TODO: реализовать
-// показать значение метрики за несколько день
-function showMetricByPeriod() {
-}
+// показать значение метрики за несколько дней
+function showMetricByPeriod(data, dates, page, name) {
+    console.log(`Values of ${name} from ${dates[0]} to ${dates[dates.length - 1]}:`);
+
+    let table = {};
+
+    dates.forEach((date) => {
+        table[date] = addMetricByDate(data, page, name, date);
+    });
+
+    console.log(navigator.userAgent);
+
+    console.table(table);
+};
 
 // показать сессию пользователя
 function showSession() {
-}
+};
 
 // сравнить метрику в разных срезах
 function compareMetric() {
-}
+};
 
 // любые другие сценарии, которые считаете полезными
 
@@ -51,7 +62,8 @@ function addMetricByDate(data, page, name, date) {
     result.p95 = quantile(sampleData, 0.95);
 
     return result;
-}
+};
+
 // рассчитывает все метрики за день
 function calcMetricsByDate(data, page, date) {
     console.log(`All metrics for ${date}:`);
@@ -68,12 +80,14 @@ function calcMetricsByDate(data, page, date) {
     console.table(table);
 };
 
-fetch('https://shri.yandex/hw/stat/data?counterId=D8F28E50-3339-11EC-9EDF-9F93090795B1')
+fetch('https://shri.yandex/hw/stat/data?counterId=3d0ce866-84ac-4962-90b6-bdf203535f50')
     .then(res => res.json())
     .then(result => {
         let data = prepareData(result);
 
         calcMetricsByDate(data, '.send-metrics', '2021-10-26');
+
+        showMetricByPeriod(data, ['2021-10-25', '2021-10-26'], '.send-metrics', 'connect');
 
         // добавить свои сценарии, реализовать функции выше
     });

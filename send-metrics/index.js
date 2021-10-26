@@ -1,6 +1,6 @@
 let counter = new Counter();
 
-counter.init('D8F28E50-3339-11EC-9EDF-9F93090795B1', String(Math.random()).substr(2, 12), '.send-metrics');
+counter.init('3d0ce866-84ac-4962-90b6-bdf203535f50', String(Math.random()).substr(2, 12), '.send-metrics');
 counter.setAdditionalParams({
     env: 'production',
     platform: 'touch'
