@@ -61,7 +61,46 @@ function sessionActionInfo(id, page, time) {
 }
 
 // сравнить метрику в разных срезах
-function compareMetric() {
+function compareMetric(data, name, page, slice, date) {
+    console.log(`'${name}' in different ${slice} for ${date}`);
+
+    const table = {};
+    const browsers = getDifferentItemsList(data);
+
+    browsers.forEach(browser => {
+        table[browser] = addMetricByBrowser(data, name, browser, date, page);;
+    });
+
+
+    console.table(table);
+};
+
+function addMetricByBrowser(data, name, browser, date, page) {
+    let sampleData = data
+        .filter(item => item.page == page && item.name == name && item.date == date && item.additional.browser === browser)
+        .map(item => item.value);
+
+    let result = {};
+    result.page = page;
+    result.hits = sampleData.length;
+    result.p25 = quantile(sampleData, 0.25);
+    result.p50 = quantile(sampleData, 0.5);
+    result.p75 = quantile(sampleData, 0.75);
+    result.p95 = quantile(sampleData, 0.95);
+
+    return result;
+};
+
+function getDifferentItemsList(data) {
+    const list = [];
+
+    data.forEach(item => {
+        if(!list.includes(item.additional.browser)) {
+            list.push(item.additional.browser);
+        }
+    });
+
+    return list;
 };
 
 // любые другие сценарии, которые считаете полезными
@@ -99,16 +138,21 @@ function calcMetricsByDate(data, page, date) {
     console.table(table);
 };
 
-fetch('https://shri.yandex/hw/stat/data?counterId=3d0ce866-84ac-4962-90b6-bdf203535f50')
+fetch('https://shri.yandex/hw/stat/data?counterId=677eaf86-5abb-4721-be38-ca28f8d244ef')
     .then(res => res.json())
     .then(result => {
         let data = prepareData(result);
-
         calcMetricsByDate(data, '.send-metrics', '2021-10-26');
-
+        console.log(' ');
         showMetricByPeriod(data, ['2021-10-25', '2021-10-26'], '.send-metrics', 'connect');
-
-        showSession(data, '.send-metrics', '2021-10-26', '99532978');
+        console.log(' ');
+        showSession(data, '.send-metrics', '2021-10-26', '83099675');
+        console.log(' ');
+        compareMetric(data, 'connect', '.send-metrics', 'browsers', '2021-10-26');
+        compareMetric(data, 'ttfb', '.send-metrics', 'browsers', '2021-10-26');
+        compareMetric(data, 'upload', '.send-metrics', 'browsers', '2021-10-26');
+        compareMetric(data, 'generate', '.send-metrics', 'browsers', '2021-10-26');
+        compareMetric(data, 'draw', '.send-metrics', 'browsers', '2021-10-26');
 
         // добавить свои сценарии, реализовать функции выше
     });

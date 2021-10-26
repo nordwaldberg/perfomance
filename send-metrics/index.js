@@ -5,10 +5,11 @@ document.querySelector('.main-text').innerHTML = `> Hello! Your request id: ${re
 
 let counter = new Counter();
 
-counter.init('3d0ce866-84ac-4962-90b6-bdf203535f50', requestID, '.send-metrics');
+counter.init('677eaf86-5abb-4721-be38-ca28f8d244ef', requestID, '.send-metrics');
 counter.setAdditionalParams({
     env: 'production',
-    platform: 'touch'
+    browser: navigator.userAgentData.brands[0].brand + ' ' + navigator.userAgentData.brands[0].version,
+    operationSystem: navigator.userAgentData.platform,
 });
 
 counter.send('connect', performance.timing.connectEnd - performance.timing.connectStart);
