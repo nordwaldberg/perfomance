@@ -1,15 +1,32 @@
+function getUserBrowser(userAgent) {
+    const Edge = userAgent.match(new RegExp(/Edg\/../));
+    const Chrome = userAgent.match(new RegExp(/Chrome\/../));
+    const Firefox = userAgent.match(new RegExp(/Firefox\/../));
+    const Safari = userAgent.match(new RegExp(/Safari\/../));
+
+    if (Edge) {
+        return 'Microsoft Edge' + ' ' + Edge[0].split('/')[1];
+    } else if (Chrome) {
+        return 'Google Chrome' + ' ' + Chrome[0].split('/')[1];
+    } else if (Firefox) {
+        return 'Mozilla Firefox' + ' ' + Firefox[0].split('/')[1];
+    } else if (Safari) {
+        return 'Safari' + ' ' + Safari[0].split('/')[1];
+    }
+};
 
 const requestID = String(Math.random()).substr(2, 8);
+const userBrowser = getUserBrowser(navigator.userAgent);
 
 document.querySelector('.main-text').innerHTML = `> Hello! Your request id: ${requestID}. Press to button _`
 
 let counter = new Counter();
 
-counter.init('677eaf86-5abb-4721-be38-ca28f8d244ef', requestID, '.send-metrics');
+counter.init('ddcb5da9-8111-4653-9d8b-4a6ad6807f7b', requestID, '.send-metrics');
 counter.setAdditionalParams({
     env: 'production',
-    browser: navigator.userAgentData.brands[0].brand + ' ' + navigator.userAgentData.brands[0].version,
-    operationSystem: navigator.userAgentData.platform,
+    browser: userBrowser,
+    operationSystem: navigator.platform,
 });
 
 counter.send('connect', performance.timing.connectEnd - performance.timing.connectStart);

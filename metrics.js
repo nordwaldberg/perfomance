@@ -138,21 +138,21 @@ function calcMetricsByDate(data, page, date) {
     console.table(table);
 };
 
-fetch('https://shri.yandex/hw/stat/data?counterId=677eaf86-5abb-4721-be38-ca28f8d244ef')
+fetch('https://shri.yandex/hw/stat/data?counterId=ddcb5da9-8111-4653-9d8b-4a6ad6807f7b')
     .then(res => res.json())
     .then(result => {
         let data = prepareData(result);
-        calcMetricsByDate(data, '.send-metrics', '2021-10-26');
+        calcMetricsByDate(data, '.send-metrics', '2021-10-27');
         console.log(' ');
-        showMetricByPeriod(data, ['2021-10-25', '2021-10-26'], '.send-metrics', 'connect');
+        showMetricByPeriod(data, ['2021-10-26', '2021-10-27'], '.send-metrics', 'connect');
         console.log(' ');
-        showSession(data, '.send-metrics', '2021-10-26', '83099675');
+        showSession(data, '.send-metrics', '2021-10-27', '85510856');
         console.log(' ');
-        compareMetric(data, 'connect', '.send-metrics', 'browsers', '2021-10-26');
-        compareMetric(data, 'ttfb', '.send-metrics', 'browsers', '2021-10-26');
-        compareMetric(data, 'upload', '.send-metrics', 'browsers', '2021-10-26');
-        compareMetric(data, 'generate', '.send-metrics', 'browsers', '2021-10-26');
-        compareMetric(data, 'draw', '.send-metrics', 'browsers', '2021-10-26');
+        compareMetric(data, 'connect', '.send-metrics', 'browsers', '2021-10-27');
+        compareMetric(data, 'ttfb', '.send-metrics', 'browsers', '2021-10-27');
+        compareMetric(data, 'upload', '.send-metrics', 'browsers', '2021-10-27');
+        compareMetric(data, 'generate', '.send-metrics', 'browsers', '2021-10-27');
+        compareMetric(data, 'draw', '.send-metrics', 'browsers', '2021-10-27');
 
         // добавить свои сценарии, реализовать функции выше
     });
