@@ -11,6 +11,8 @@ Page that displays data in the console:
 
 https://nordwaldberg.github.io/perfomance/metrics.html
 
+If data are not displayed in table view, refresh the page (Press F5)
+
 ##Downloading
 
 ```shell
