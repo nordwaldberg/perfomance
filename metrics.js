@@ -17,10 +17,32 @@ function prepareData(result) {
 
         return item;
     });
-}
+};
 
-// TODO: реализовать
-// показать значение метрики за несколько дней
+function getDifferentItemsList(data, diff) {
+    const list = [];
+
+    data.forEach(item => {
+        if(!list.includes(item.additional[diff])) {
+            list.push(item.additional[diff]);
+        }
+    });
+
+    return list;
+};
+
+function sessionActionInfo(id, page, time, OS, browser) {
+    const action = {};
+
+    action.sessionId = id;
+    action.page = page;
+    action.OS = OS;
+    action.browser = browser;
+    action.time = time;
+
+    return action;
+};
+
 function showMetricByPeriod(data, dates, page, name) {
     console.log(`Values of '${name}' from ${dates[0]} to ${dates[dates.length - 1]}:`);
 
@@ -33,7 +55,6 @@ function showMetricByPeriod(data, dates, page, name) {
     console.table(table);
 };
 
-// показать сессию пользователя
 function showSession(data, page, date, sessionId) {
     console.log(`User ${sessionId} session from ${date}`);
 
@@ -44,28 +65,18 @@ function showSession(data, page, date, sessionId) {
     session.forEach(item => {
         const timestampArr = item.timestamp.split('T');
         const time = timestampArr[timestampArr.length - 1];
-            sessionTable[item.name] = sessionActionInfo(sessionId, item.page, time);
+            sessionTable[item.name] =
+                sessionActionInfo(sessionId, item.page, time, item.additional.operationSystem, item.additional.browser);
     });
 
     console.table(sessionTable);
 };
 
-function sessionActionInfo(id, page, time) {
-    const action = {};
-
-    action.sessionId = id;
-    action.page = page;
-    action.time = time;
-
-    return action;
-}
-
-// сравнить метрику в разных срезах
 function compareMetric(data, name, page, slice, date) {
-    console.log(`'${name}' in different ${slice} for ${date}`);
+    console.log(`'${name}' in different ${slice}s for ${date}`);
 
     const table = {};
-    const browsers = getDifferentItemsList(data);
+    const browsers = getDifferentItemsList(data, slice);
 
     browsers.forEach(browser => {
         table[browser] = addMetricByBrowser(data, name, browser, date, page);;
@@ -91,23 +102,6 @@ function addMetricByBrowser(data, name, browser, date, page) {
     return result;
 };
 
-function getDifferentItemsList(data) {
-    const list = [];
-
-    data.forEach(item => {
-        if(!list.includes(item.additional.browser)) {
-            list.push(item.additional.browser);
-        }
-    });
-
-    return list;
-};
-
-// любые другие сценарии, которые считаете полезными
-
-
-// Пример
-// добавить метрику за выбранный день
 function addMetricByDate(data, page, name, date) {
     let sampleData = data
         .filter(item => item.page == page && item.name == name && item.date == date)
@@ -124,19 +118,35 @@ function addMetricByDate(data, page, name, date) {
     return result;
 };
 
-// рассчитывает все метрики за день
 function calcMetricsByDate(data, page, date) {
     console.log(`All metrics for ${date}:`);
 
     let table = {};
     table.connect = addMetricByDate(data, page, 'connect', date);
     table.ttfb = addMetricByDate(data, page, 'ttfb', date);
+    table.fid = addMetricByDate(data, page, 'fid', date);
     table.upload = addMetricByDate(data, page, 'upload', date);
-    table.generate = addMetricByDate(data, page, 'generate', date);
-    table.draw = addMetricByDate(data, page, 'draw', date);
 
     console.table(table);
 };
+
+function metricDifferenceByDates(data, dateFrom, dateTo, page, name) {
+    console.log(`Difference of ${name} from ${dateFrom} to ${dateTo}`);
+
+    const metricValueByDateFrom = addMetricByDate(data, page, name, dateFrom);
+    const metricValueByDateTo = addMetricByDate(data, page, name, dateTo);
+
+    const difference = {};
+
+    for (let field in metricValueByDateTo) {
+        difference[field] = metricValueByDateTo[field] - metricValueByDateFrom[field];
+    };
+
+    difference.page = page;
+
+    console.table(difference);
+};
+
 
 fetch('https://shri.yandex/hw/stat/data?counterId=ddcb5da9-8111-4653-9d8b-4a6ad6807f7b')
     .then(res => res.json())
@@ -146,13 +156,12 @@ fetch('https://shri.yandex/hw/stat/data?counterId=ddcb5da9-8111-4653-9d8b-4a6ad6
         console.log(' ');
         showMetricByPeriod(data, ['2021-10-26', '2021-10-27'], '.send-metrics', 'connect');
         console.log(' ');
+        metricDifferenceByDates(data, '2021-10-26', '2021-10-27', '.send-metrics', 'connect');
+        console.log(' ');
         showSession(data, '.send-metrics', '2021-10-27', '85510856');
         console.log(' ');
-        compareMetric(data, 'connect', '.send-metrics', 'browsers', '2021-10-27');
-        compareMetric(data, 'ttfb', '.send-metrics', 'browsers', '2021-10-27');
-        compareMetric(data, 'upload', '.send-metrics', 'browsers', '2021-10-27');
-        compareMetric(data, 'generate', '.send-metrics', 'browsers', '2021-10-27');
-        compareMetric(data, 'draw', '.send-metrics', 'browsers', '2021-10-27');
-
-        // добавить свои сценарии, реализовать функции выше
+        compareMetric(data, 'connect', '.send-metrics', 'browser', '2021-10-27');
+        compareMetric(data, 'ttfb', '.send-metrics', 'browser', '2021-10-27');
+        compareMetric(data, 'fid', '.send-metrics', 'browser', '2021-10-27');
+        compareMetric(data, 'upload', '.send-metrics', 'browser', '2021-10-27');
     });

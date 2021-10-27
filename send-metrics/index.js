@@ -32,19 +32,10 @@ counter.setAdditionalParams({
 counter.send('connect', performance.timing.connectEnd - performance.timing.connectStart);
 counter.send('ttfb', performance.timing.responseEnd - performance.timing.requestStart);
 
+
 let uploadData = function () {
     let html = `> Uploaded! Your request id: ${requestID}. Thanks _`;
-    let genStart = Date.now();
-
-    counter.send('generate', Date.now() - genStart);
-
-    let drawStart = Date.now();
-
     document.querySelector('.main-text').innerHTML = html;
-
-    requestAnimationFrame(function () {
-        counter.send('draw', Date.now() - drawStart);
-    });
 };
 
 document.querySelector('.upload-btn').onclick = function () {
@@ -56,3 +47,9 @@ document.querySelector('.upload-btn').onclick = function () {
         uploadData();
     }, Math.random() * 1000);
 }
+
+new PerformanceObserver((entryList) => {
+    for (const entry of entryList.getEntries()) {
+        counter.send('fid', entry.processingStart - entry.startTime);
+    }
+}).observe({type: 'first-input', buffered: true});
