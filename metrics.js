@@ -88,7 +88,7 @@ function compareMetric(data, name, page, slice, date) {
 
 function addMetricByBrowser(data, name, browser, date, page) {
     let sampleData = data
-        .filter(item => item.page == page && item.name == name && item.date == date && item.additional.browser === browser)
+        .filter(item => item.page === page && item.name === name && item.date === date && item.additional.browser === browser)
         .map(item => item.value);
 
     let result = {};
@@ -104,7 +104,7 @@ function addMetricByBrowser(data, name, browser, date, page) {
 
 function addMetricByDate(data, page, name, date) {
     let sampleData = data
-        .filter(item => item.page == page && item.name == name && item.date == date)
+        .filter(item => item.page === page && item.name === name && item.date === date)
         .map(item => item.value);
 
     let result = {};
