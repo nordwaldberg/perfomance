@@ -152,16 +152,16 @@ fetch('https://shri.yandex/hw/stat/data?counterId=ddcb5da9-8111-4653-9d8b-4a6ad6
     .then(res => res.json())
     .then(result => {
         let data = prepareData(result);
-        calcMetricsByDate(data, '.send-metrics', '2021-10-27');
+        calcMetricsByDate(data, '.send-metrics', '2021-10-28');
         console.log(' ');
-        showMetricByPeriod(data, ['2021-10-26', '2021-10-27'], '.send-metrics', 'connect');
+        showMetricByPeriod(data, ['2021-10-27', '2021-10-28'], '.send-metrics', 'connect');
         console.log(' ');
-        metricDifferenceByDates(data, '2021-10-26', '2021-10-27', '.send-metrics', 'connect');
+        metricDifferenceByDates(data, '2021-10-27', '2021-10-28', '.send-metrics', 'connect');
         console.log(' ');
-        showSession(data, '.send-metrics', '2021-10-27', '85510856');
+        showSession(data, '.send-metrics', '2021-10-28', '06758545');
         console.log(' ');
-        compareMetric(data, 'connect', '.send-metrics', 'browser', '2021-10-27');
-        compareMetric(data, 'ttfb', '.send-metrics', 'browser', '2021-10-27');
-        compareMetric(data, 'fid', '.send-metrics', 'browser', '2021-10-27');
-        compareMetric(data, 'upload', '.send-metrics', 'browser', '2021-10-27');
+        compareMetric(data, 'connect', '.send-metrics', 'browser', '2021-10-28');
+        compareMetric(data, 'ttfb', '.send-metrics', 'browser', '2021-10-28');
+        compareMetric(data, 'fid', '.send-metrics', 'browser', '2021-10-28');
+        compareMetric(data, 'upload', '.send-metrics', 'browser', '2021-10-28');
     });
